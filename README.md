@@ -8,6 +8,8 @@
 ![Offline](https://img.shields.io/badge/offline-ready-48c97e?style=for-the-badge)
 ![No Install](https://img.shields.io/badge/no_install-required-ff6a9b?style=for-the-badge)
 
+[![Deploy static content to Pages](https://github.com/suryadi346-star/html-AI/actions/workflows/static.yml/badge.svg)](https://github.com/suryadi346-star/html-AI/actions/workflows/static.yml)
+
 ---
 
 ## ✨ Fitur Utama
