@@ -2,856 +2,231 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>PocketAI – Local & Cloud AI</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;800&display=swap');
-
   :root {
-    --bg: #080810;
-    --surface: #10101c;
-    --surface2: #18182a;
-    --surface3: #20203a;
-    --border: #28284a;
-    --border2: #38386a;
-    --accent: #7c6aff;
-    --accent2: #ff6a9b;
-    --accent-ollama: #48c97e;
-    --accent-ollama2: #00e5c0;
-    --text: #e0e0f0;
-    --text-muted: #6060a0;
-    --user-bubble: #1c1840;
-    --ai-bubble: #0f0f22;
-    --glow-cloud: rgba(124,106,255,0.18);
-    --glow-local: rgba(72,201,126,0.18);
-    --glow: rgba(124,106,255,0.18);
+    --bg:#080810;--surface:#10101c;--surface2:#18182a;--surface3:#20203a;
+    --border:#28284a;--border2:#38386a;--accent:#7c6aff;--accent2:#ff6a9b;
+    --accent-ollama:#48c97e;--accent-ollama2:#00e5c0;--text:#e0e0f0;
+    --text-muted:#6060a0;--user-bubble:#1c1840;--ai-bubble:#0f0f22;
+    --glow-cloud:rgba(124,106,255,0.18);--glow-local:rgba(72,201,126,0.18);--glow:rgba(124,106,255,0.18);
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Syne', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 70% 40% at 20% 0%, rgba(124,106,255,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 30% at 80% 100%, rgba(72,201,126,0.06) 0%, transparent 60%);
-    pointer-events: none; z-index: 0;
-  }
-
-  /* HEADER */
-  header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 11px 16px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(8,8,16,0.96);
-    backdrop-filter: blur(16px);
-    position: relative; z-index: 100;
-    gap: 10px; flex-wrap: wrap;
-  }
-
-  .logo { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
-
-  .logo-icon {
-    width: 31px; height: 31px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-    box-shadow: 0 0 14px var(--glow);
-    transition: all 0.4s;
-  }
-
-  body.mode-local .logo-icon {
-    background: linear-gradient(135deg, var(--accent-ollama), var(--accent-ollama2));
-    box-shadow: 0 0 14px var(--glow-local);
-  }
-
-  .logo-text {
-    font-size: 16px; font-weight: 800; letter-spacing: -0.5px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    transition: all 0.4s;
-  }
-
-  body.mode-local .logo-text {
-    background: linear-gradient(90deg, var(--accent-ollama), var(--accent-ollama2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-
-  /* MODE TOGGLE */
-  .mode-toggle {
-    display: flex; align-items: center;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 11px; padding: 3px; gap: 3px;
-  }
-
-  .mode-btn {
-    display: flex; align-items: center; gap: 5px;
-    padding: 5px 11px; border-radius: 8px;
-    font-size: 12px; font-weight: 600; cursor: pointer;
-    border: none; background: none; color: var(--text-muted);
-    font-family: 'Syne', sans-serif; transition: all 0.25s;
-  }
-
-  .mode-btn.active-cloud {
-    background: linear-gradient(135deg, #2a2060, #3a1840);
-    color: #c0b0ff;
-    box-shadow: 0 0 10px var(--glow-cloud);
-  }
-
-  .mode-btn.active-local {
-    background: linear-gradient(135deg, #0a3020, #083828);
-    color: #80ffb0;
-    box-shadow: 0 0 10px var(--glow-local);
-  }
-
-  .mb-dot { width: 6px; height: 6px; border-radius: 50%; }
-  .mode-btn.active-cloud .mb-dot { background: #a090ff; animation: pulse 2s infinite; }
-  .mode-btn.active-local .mb-dot { background: var(--accent-ollama); animation: pulse 2s infinite; }
-
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-  .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 20% 0%,rgba(124,106,255,.08) 0%,transparent 60%),radial-gradient(ellipse 50% 30% at 80% 100%,rgba(72,201,126,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
+  header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:rgba(8,8,16,.96);backdrop-filter:blur(16px);position:relative;z-index:100;gap:8px;flex-wrap:nowrap;min-height:52px}
+  .logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 14px var(--glow);transition:all .4s}
+  body.mode-local .logo-icon{background:linear-gradient(135deg,var(--accent-ollama),var(--accent-ollama2));box-shadow:0 0 14px var(--glow-local)}
+  .logo-text{font-size:15px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;transition:all .4s;white-space:nowrap}
+  body.mode-local .logo-text{background:linear-gradient(90deg,var(--accent-ollama),var(--accent-ollama2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .mode-toggle{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:3px;gap:3px;flex-shrink:0}
+  .mode-btn{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--text-muted);font-family:'Syne',sans-serif;transition:all .25s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+  .mode-btn.active-cloud{background:linear-gradient(135deg,#2a2060,#3a1840);color:#c0b0ff;box-shadow:0 0 10px var(--glow-cloud)}
+  .mode-btn.active-local{background:linear-gradient(135deg,#0a3020,#083828);color:#80ffb0;box-shadow:0 0 10px var(--glow-local)}
+  .mb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+  .mode-btn.active-cloud .mb-dot{background:#a090ff;animation:pulse 2s infinite}
+  .mode-btn.active-local .mb-dot{background:var(--accent-ollama);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .header-right{display:flex;align-items:center;gap:6px;flex:1;justify-content:flex-end;min-width:0}
+  .model-select-wrap{position:relative;min-width:0;flex-shrink:1}
+  .model-select-wrap select{appearance:none;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);padding:4px 22px 4px 8px;border-radius:8px;font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;outline:none;transition:all .2s;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+  .model-select-wrap select:hover{border-color:var(--border2);color:var(--text)}
+  .model-select-wrap::after{content:'▾';position:absolute;right:6px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:10px;pointer-events:none}
+  .status-badge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 7px;border-radius:20px;display:flex;align-items:center;gap:3px;flex-shrink:0;white-space:nowrap}
+  .status-badge.online{background:rgba(72,201,126,.12);border:1px solid rgba(72,201,126,.3);color:var(--accent-ollama)}
+  .status-badge.offline{background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.25);color:#ff8080}
+  .status-badge.idle{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)}
+  .clear-btn{background:none;border:1px solid var(--border);color:var(--text-muted);padding:4px 8px;border-radius:8px;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+  .clear-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+  /* API KEY ROW */
+  #apiKeySection{display:none;padding:7px 14px;border-bottom:1px solid var(--border);background:rgba(8,8,16,.96);gap:6px;align-items:center;flex-wrap:wrap;position:relative;z-index:99}
+  #apiKeySection.visible{display:flex}
+  #apiKeySection label{font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+  #apiKeyInput{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 9px;border-radius:8px;font-size:11px;font-family:'JetBrains Mono',monospace;outline:none;flex:1;min-width:100px;transition:border-color .2s}
+  #apiKeyInput:focus{border-color:var(--accent)}
+  #saveKeyBtn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;padding:5px 10px;border-radius:8px;font-size:11px;font-family:'Syne',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+  .api-note{font-size:9px;color:var(--text-muted);width:100%;font-family:'JetBrains Mono',monospace;opacity:.7}
   /* OLLAMA HOST */
-  #ollamaHostWrap { display: none; align-items: center; gap: 6px; }
-  #ollamaHostWrap.visible { display: flex; }
-
-  #ollamaHost {
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text); padding: 4px 9px; border-radius: 8px;
-    font-size: 11px; font-family: 'JetBrains Mono', monospace;
-    outline: none; width: 165px; transition: border-color 0.2s;
-  }
-  #ollamaHost:focus { border-color: var(--accent-ollama); }
-
-  #detectBtn {
-    background: var(--surface3); border: 1px solid var(--border);
-    color: var(--text-muted); padding: 4px 9px; border-radius: 8px;
-    font-size: 11px; cursor: pointer; font-family: 'Syne', sans-serif; transition: all 0.2s;
-  }
-  #detectBtn:hover { border-color: var(--accent-ollama); color: var(--accent-ollama); }
-
-  /* MODEL SELECT */
-  .model-select-wrap { position: relative; }
-  .model-select-wrap select {
-    appearance: none; background: var(--surface2);
-    border: 1px solid var(--border); color: var(--text-muted);
-    padding: 4px 24px 4px 9px; border-radius: 8px;
-    font-size: 11px; font-family: 'JetBrains Mono', monospace;
-    cursor: pointer; outline: none; transition: all 0.2s;
-  }
-  .model-select-wrap select:hover { border-color: var(--border2); color: var(--text); }
-  .model-select-wrap::after {
-    content: '▾'; position: absolute; right: 7px; top: 50%; transform: translateY(-50%);
-    color: var(--text-muted); font-size: 10px; pointer-events: none;
-  }
-
-  /* STATUS */
-  .status-badge {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    padding: 3px 9px; border-radius: 20px;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .status-badge.online { background: rgba(72,201,126,0.12); border: 1px solid rgba(72,201,126,0.3); color: var(--accent-ollama); }
-  .status-badge.offline { background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.25); color: #ff8080; }
-  .status-badge.idle { background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); }
-
-  .clear-btn {
-    background: none; border: 1px solid var(--border); color: var(--text-muted);
-    padding: 4px 10px; border-radius: 8px; cursor: pointer;
-    font-size: 11px; font-family: 'Syne', sans-serif; transition: all 0.2s;
-  }
-  .clear-btn:hover { border-color: var(--accent2); color: var(--accent2); }
-
+  #ollamaHostWrap{display:none;padding:7px 14px;border-bottom:1px solid var(--border);background:rgba(8,8,16,.96);gap:6px;align-items:center;position:relative;z-index:98;flex-wrap:wrap}
+  #ollamaHostWrap.visible{display:flex}
+  #ollamaHost{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 9px;border-radius:8px;font-size:11px;font-family:'JetBrains Mono',monospace;outline:none;flex:1;min-width:150px;transition:border-color .2s}
+  #ollamaHost:focus{border-color:var(--accent-ollama)}
+  #detectBtn{background:var(--surface3);border:1px solid var(--border);color:var(--text-muted);padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+  #detectBtn:hover{border-color:var(--accent-ollama);color:var(--accent-ollama)}
   /* MESSAGES */
-  #messages {
-    flex: 1; overflow-y: auto; padding: 18px;
-    display: flex; flex-direction: column; gap: 13px;
-    scroll-behavior: smooth; position: relative; z-index: 1;
-  }
-  #messages::-webkit-scrollbar { width: 4px; }
-  #messages::-webkit-scrollbar-track { background: transparent; }
-  #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  /* WELCOME */
-  .welcome { text-align: center; padding: 40px 20px 20px; animation: fadeUp 0.5s ease; }
-  .welcome-icon { font-size: 40px; margin-bottom: 12px; display: block; }
-  .welcome h2 {
-    font-size: 24px; font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px;
-  }
-  .welcome p { color: var(--text-muted); font-size: 13px; line-height: 1.6; max-width: 380px; margin: 0 auto 18px; }
-
-  .mode-cards { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; max-width: 520px; margin: 0 auto 20px; }
-  .mode-card { flex: 1; min-width: 190px; background: var(--surface); border: 1px solid var(--border); border-radius: 13px; padding: 14px; text-align: left; }
-  .mode-card .card-icon { font-size: 20px; margin-bottom: 7px; display: block; }
-  .mode-card .card-title { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
-  .mode-card .card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
-  .mode-card.cloud { border-color: rgba(124,106,255,0.3); }
-  .mode-card.local { border-color: rgba(72,201,126,0.25); }
-  .mode-card.cloud .card-title { color: #a090ff; }
-  .mode-card.local .card-title { color: var(--accent-ollama); }
-
-  .suggestions { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; max-width: 500px; margin: 0 auto; }
-  .suggestion-chip {
-    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
-    padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
-    transition: all 0.2s; font-family: 'Syne', sans-serif;
-  }
-  .suggestion-chip:hover { border-color: var(--accent); background: var(--user-bubble); transform: translateY(-1px); }
-
-  /* BUBBLES */
-  .msg {
-    display: flex; gap: 9px; animation: fadeUp 0.3s ease;
-    max-width: 800px; width: 100%; margin: 0 auto;
-  }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-  .msg.user { flex-direction: row-reverse; }
-
-  .avatar {
-    width: 29px; height: 29px; border-radius: 8px;
-    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-    font-size: 13px; margin-top: 2px;
-  }
-  .msg.user .avatar { background: linear-gradient(135deg, #3b2fa0, #6b21a8); }
-  .msg.ai.cloud-msg .avatar { background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 9px var(--glow-cloud); }
-  .msg.ai.local-msg .avatar { background: linear-gradient(135deg, var(--accent-ollama), var(--accent-ollama2)); box-shadow: 0 0 9px var(--glow-local); }
-
-  .bubble {
-    padding: 10px 14px; border-radius: 14px;
-    font-size: 14px; line-height: 1.75;
-    max-width: calc(100% - 38px); word-break: break-word;
-  }
-  .msg.user .bubble {
-    background: var(--user-bubble);
-    border: 1px solid rgba(124,106,255,0.2);
-    border-bottom-right-radius: 4px; color: #ccc8f0;
-  }
-  .msg.ai .bubble { background: var(--ai-bubble); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-  .msg.ai.local-msg .bubble { border-color: rgba(72,201,126,0.15); }
-
-  .source-label {
-    font-size: 10px; font-family: 'JetBrains Mono', monospace;
-    color: var(--text-muted); margin-bottom: 5px;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .sl-dot { width: 5px; height: 5px; border-radius: 50%; }
-  .cloud-msg .sl-dot { background: var(--accent); }
-  .local-msg .sl-dot { background: var(--accent-ollama); }
-
-  .bubble code {
-    font-family: 'JetBrains Mono', monospace;
-    background: rgba(124,106,255,0.12); padding: 1px 5px; border-radius: 4px;
-    font-size: 12px; color: #a090ff;
-  }
-  .bubble pre {
-    background: #090914; border: 1px solid var(--border); border-radius: 10px;
-    padding: 12px; overflow-x: auto; margin: 9px 0;
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; color: #c0c0e0;
-  }
-  .bubble pre code { background: none; padding: 0; color: inherit; }
-
-  /* TYPING */
-  .typing .bubble { display: flex; gap: 6px; align-items: center; padding: 12px 15px; }
-  .tdot { width: 7px; height: 7px; border-radius: 50%; animation: tbounce 1.2s infinite; }
-  .cloud-typing .tdot { background: var(--accent); }
-  .local-typing .tdot { background: var(--accent-ollama); }
-  .tdot:nth-child(2){animation-delay:.2s} .tdot:nth-child(3){animation-delay:.4s}
-  @keyframes tbounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-6px);opacity:1} }
-
-  .streaming-cursor::after { content:'▋'; animation:blink .7s infinite; color:var(--accent); font-size:12px; margin-left:1px; }
-  .local-stream.streaming-cursor::after { color: var(--accent-ollama); }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
+  #messages{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;position:relative;z-index:1;-webkit-overflow-scrolling:touch}
+  #messages::-webkit-scrollbar{width:3px}
+  #messages::-webkit-scrollbar-track{background:transparent}
+  #messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+  .welcome{text-align:center;padding:24px 16px 16px;animation:fadeUp .5s ease}
+  .welcome-icon{font-size:36px;margin-bottom:10px;display:block}
+  .welcome h2{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+  .welcome p{color:var(--text-muted);font-size:12px;line-height:1.6;max-width:340px;margin:0 auto 16px}
+  .mode-cards{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;max-width:500px;margin:0 auto 16px}
+  .mode-card{flex:1;min-width:140px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:left}
+  .mode-card .card-icon{font-size:18px;margin-bottom:6px;display:block}
+  .mode-card .card-title{font-size:11px;font-weight:700;margin-bottom:4px}
+  .mode-card .card-desc{font-size:10px;color:var(--text-muted);line-height:1.5}
+  .mode-card.cloud{border-color:rgba(124,106,255,.3)}.mode-card.local{border-color:rgba(72,201,126,.25)}
+  .mode-card.cloud .card-title{color:#a090ff}.mode-card.local .card-title{color:var(--accent-ollama)}
+  .suggestions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:480px;margin:0 auto}
+  .suggestion-chip{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 11px;border-radius:20px;font-size:11px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;-webkit-tap-highlight-color:transparent}
+  .suggestion-chip:hover{border-color:var(--accent);background:var(--user-bubble);transform:translateY(-1px)}
+  .suggestion-chip:active{transform:translateY(0)}
+  .msg{display:flex;gap:8px;animation:fadeUp .3s ease;max-width:720px;width:100%;margin:0 auto}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .msg.user{flex-direction:row-reverse}
+  .avatar{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:2px}
+  .msg.user .avatar{background:linear-gradient(135deg,#3b2fa0,#6b21a8)}
+  .msg.ai.cloud-msg .avatar{background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 9px var(--glow-cloud)}
+  .msg.ai.local-msg .avatar{background:linear-gradient(135deg,var(--accent-ollama),var(--accent-ollama2));box-shadow:0 0 9px var(--glow-local)}
+  .bubble{padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.75;max-width:calc(100% - 36px);word-break:break-word;overflow-wrap:anywhere}
+  .msg.user .bubble{background:var(--user-bubble);border:1px solid rgba(124,106,255,.2);border-bottom-right-radius:4px;color:#ccc8f0}
+  .msg.ai .bubble{background:var(--ai-bubble);border:1px solid var(--border);border-bottom-left-radius:4px}
+  .msg.ai.local-msg .bubble{border-color:rgba(72,201,126,.15)}
+  .source-label{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);margin-bottom:5px;display:flex;align-items:center;gap:4px}
+  .sl-dot{width:5px;height:5px;border-radius:50%}
+  .cloud-msg .sl-dot{background:var(--accent)}.local-msg .sl-dot{background:var(--accent-ollama)}
+  .bubble code{font-family:'JetBrains Mono',monospace;background:rgba(124,106,255,.12);padding:1px 5px;border-radius:4px;font-size:11px;color:#a090ff}
+  .bubble pre{background:#090914;border:1px solid var(--border);border-radius:10px;padding:10px;overflow-x:auto;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.6;color:#c0c0e0;-webkit-overflow-scrolling:touch}
+  .bubble pre code{background:none;padding:0;color:inherit;font-size:inherit}
+  .typing .bubble{display:flex;gap:6px;align-items:center;padding:12px 14px}
+  .tdot{width:6px;height:6px;border-radius:50%;animation:tbounce 1.2s infinite}
+  .cloud-typing .tdot{background:var(--accent)}.local-typing .tdot{background:var(--accent-ollama)}
+  .tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+  @keyframes tbounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+  .streaming-cursor::after{content:'▋';animation:blink .7s infinite;color:var(--accent);font-size:11px;margin-left:1px}
+  .local-stream.streaming-cursor::after{color:var(--accent-ollama)}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
   /* INPUT */
-  .input-area {
-    padding: 13px 16px 17px; border-top: 1px solid var(--border);
-    background: rgba(8,8,16,0.96); backdrop-filter: blur(16px);
-    position: relative; z-index: 10;
-  }
-  .input-wrapper {
-    max-width: 800px; margin: 0 auto;
-    display: flex; gap: 9px; align-items: flex-end;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 8px 11px;
-    transition: border-color .25s, box-shadow .25s;
-  }
-  .input-wrapper:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow-cloud); }
-  body.mode-local .input-wrapper:focus-within { border-color: var(--accent-ollama); box-shadow: 0 0 0 3px var(--glow-local); }
-
-  #input {
-    flex: 1; background: none; border: none; outline: none;
-    color: var(--text); font-size: 14px; font-family: 'Syne', sans-serif;
-    resize: none; max-height: 120px; line-height: 1.5; padding: 2px 0;
-  }
-  #input::placeholder { color: var(--text-muted); }
-
-  #sendBtn {
-    width: 33px; height: 33px; border-radius: 9px; border: none;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; transition: all 0.2s; box-shadow: 0 3px 9px var(--glow-cloud);
-  }
-  body.mode-local #sendBtn { background: linear-gradient(135deg, var(--accent-ollama), var(--accent-ollama2)); box-shadow: 0 3px 9px var(--glow-local); }
-  #sendBtn:hover:not(:disabled) { transform: scale(1.06); }
-  #sendBtn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
-
-  .input-footer {
-    max-width: 800px; margin: 6px auto 0;
-    font-size: 10px; color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
-    text-align: center; opacity: .5;
-  }
-
-  /* BANNERS */
-  .error-banner, .info-banner {
-    max-width: 800px; margin: 0 auto;
-    padding: 9px 14px; border-radius: 10px;
-    font-size: 13px; animation: fadeUp .3s ease;
-  }
-  .error-banner { background: rgba(255,80,80,.1); border: 1px solid rgba(255,80,80,.25); color: #ff9090; }
-  .info-banner { background: rgba(72,201,126,.08); border: 1px solid rgba(72,201,126,.25); color: #80e0a0; }
-
+  .input-area{padding:10px 12px;border-top:1px solid var(--border);background:rgba(8,8,16,.96);backdrop-filter:blur(16px);position:relative;z-index:10;padding-bottom:max(14px,env(safe-area-inset-bottom,14px))}
+  .input-wrapper{max-width:720px;margin:0 auto;display:flex;gap:8px;align-items:flex-end;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:7px 10px;transition:border-color .25s,box-shadow .25s}
+  .input-wrapper:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow-cloud)}
+  body.mode-local .input-wrapper:focus-within{border-color:var(--accent-ollama);box-shadow:0 0 0 3px var(--glow-local)}
+  #input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:'Syne',sans-serif;resize:none;max-height:100px;line-height:1.5;padding:2px 0;-webkit-appearance:none}
+  #input::placeholder{color:var(--text-muted)}
+  #sendBtn{width:32px;height:32px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;box-shadow:0 3px 9px var(--glow-cloud);-webkit-tap-highlight-color:transparent}
+  body.mode-local #sendBtn{background:linear-gradient(135deg,var(--accent-ollama),var(--accent-ollama2));box-shadow:0 3px 9px var(--glow-local)}
+  #sendBtn:hover:not(:disabled){transform:scale(1.06)}
+  #sendBtn:active:not(:disabled){transform:scale(.95)}
+  #sendBtn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .input-footer{max-width:720px;margin:5px auto 0;font-size:9px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;text-align:center;opacity:.5}
+  .error-banner,.info-banner{max-width:720px;margin:0 auto;padding:8px 12px;border-radius:10px;font-size:12px;animation:fadeUp .3s ease;line-height:1.5}
+  .error-banner{background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.25);color:#ff9090}
+  .info-banner{background:rgba(72,201,126,.08);border:1px solid rgba(72,201,126,.25);color:#80e0a0}
   /* MODAL */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
-    align-items: center; justify-content: center;
+  .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px}
+  .modal-overlay.open{display:flex;animation:fadeIn .2s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:20px;width:100%;max-width:460px;animation:scaleIn .25s ease;max-height:90dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  @keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+  .modal h3{font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent-ollama)}
+  .modal p{font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:10px}
+  .modal pre{background:#060610;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#c0e0c0;margin-bottom:10px;overflow-x:auto;line-height:1.7;-webkit-overflow-scrolling:touch}
+  .cors-note{font-size:11px;color:#ff9060;background:rgba(255,120,60,.08);border:1px solid rgba(255,120,60,.2);border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.6}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+  .modal-actions button{padding:7px 14px;border-radius:9px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;-webkit-tap-highlight-color:transparent}
+  .btn-secondary{background:var(--surface2);border:1px solid var(--border)!important;color:var(--text-muted)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent-ollama),var(--accent-ollama2));color:#000}
+  .btn-primary:hover{filter:brightness(1.1)}.btn-secondary:hover{color:var(--text)}
+  @media(max-width:480px){
+    .logo-text{display:none}
+    .status-badge{display:none}
+    .model-select-wrap select{max-width:90px;font-size:9px}
+    .mode-btn{padding:5px 8px}
+    header{padding:8px 10px}
   }
-  .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-  .modal {
-    background: var(--surface); border: 1px solid var(--border2);
-    border-radius: 18px; padding: 26px; max-width: 480px; width: 90%;
-    animation: scaleIn .25s ease;
-  }
-  @keyframes scaleIn { from{opacity:0;transform:scale(.94)} to{opacity:1;transform:scale(1)} }
-
-  .modal h3 { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: var(--accent-ollama); }
-  .modal p { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 12px; }
-  .modal pre {
-    background: #060610; border: 1px solid var(--border); border-radius: 8px; padding: 12px;
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #c0e0c0;
-    margin-bottom: 12px; overflow-x: auto; line-height: 1.7;
-  }
-  .cors-note {
-    font-size: 11px; color: #ff9060;
-    background: rgba(255,120,60,.08); border: 1px solid rgba(255,120,60,.2);
-    border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; line-height: 1.6;
-  }
-  .modal-actions { display: flex; gap: 9px; justify-content: flex-end; }
-  .modal-actions button {
-    padding: 7px 16px; border-radius: 9px;
-    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
-    cursor: pointer; border: none; transition: all .2s;
-  }
-  .btn-secondary { background: var(--surface2); border: 1px solid var(--border) !important; color: var(--text-muted); }
-  .btn-primary { background: linear-gradient(135deg, var(--accent-ollama), var(--accent-ollama2)); color: #000; }
-  .btn-primary:hover { filter: brightness(1.1); }
-  .btn-secondary:hover { color: var(--text); }
 </style>
 </head>
 <body>
-
-<!-- MODAL SETUP OLLAMA -->
 <div class="modal-overlay" id="ollamaModal">
   <div class="modal">
     <h3>🦙 Setup Ollama (Mode Lokal)</h3>
-    <p>Install dan jalankan <strong>Ollama</strong> di komputer kamu terlebih dahulu:</p>
-    <pre># 1. Install Ollama
+    <p>Install dan jalankan <strong>Ollama</strong> di komputer kamu:</p>
+    <pre># Install
 curl -fsSL https://ollama.ai/install.sh | sh
-# Windows: download dari https://ollama.ai
+# Windows: https://ollama.ai
 
-# 2. Jalankan dengan CORS enabled (WAJIB untuk browser)
+# Jalankan dengan CORS enabled (WAJIB)
 OLLAMA_ORIGINS="*" ollama serve
 
-# 3. Pull model yang diinginkan
-ollama pull llama3.2        # 2GB - umum
-ollama pull qwen2.5:3b      # 1.9GB - ringan & cepat
-ollama pull mistral         # 4.1GB - powerful
-ollama pull phi3.5          # 2.2GB - Microsoft</pre>
-    <div class="cors-note">
-      ⚠️ <strong>PENTING:</strong> Browser membutuhkan CORS header. Jalankan Ollama dengan <code>OLLAMA_ORIGINS="*" ollama serve</code>. Di Windows: set variabel env <code>OLLAMA_ORIGINS=*</code> sebelum menjalankan.
-    </div>
-    <p>Setelah Ollama berjalan, klik <strong>Coba Hubungkan</strong> untuk mendeteksi model secara otomatis.</p>
+# Pull model
+ollama pull llama3.2        # 2GB
+ollama pull qwen2.5:3b      # 1.9GB - ringan</pre>
+    <div class="cors-note">⚠️ <strong>PENTING:</strong> Jalankan dengan <code>OLLAMA_ORIGINS="*" ollama serve</code></div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal()">Nanti saja</button>
-      <button class="btn-primary" onclick="closeModal(); detectOllamaModels()">🔗 Coba Hubungkan</button>
+      <button class="btn-primary" onclick="closeModal();detectOllamaModels()">🔗 Coba Hubungkan</button>
     </div>
   </div>
 </div>
 
-<!-- HEADER -->
 <header>
   <div class="logo">
     <div class="logo-icon">🤖</div>
     <span class="logo-text">PocketAI</span>
   </div>
-
   <div class="mode-toggle">
-    <button class="mode-btn active-cloud" id="btnCloud" onclick="setMode('cloud')">
-      <span class="mb-dot"></span> ☁ Cloud
-    </button>
-    <button class="mode-btn" id="btnLocal" onclick="setMode('local')">
-      <span class="mb-dot"></span> 🦙 Lokal
-    </button>
+    <button class="mode-btn active-cloud" id="btnCloud" onclick="setMode('cloud')"><span class="mb-dot"></span>☁ Cloud</button>
+    <button class="mode-btn" id="btnLocal" onclick="setMode('local')"><span class="mb-dot"></span>🦙 Lokal</button>
   </div>
-
   <div class="header-right">
-    <div id="ollamaHostWrap">
-      <input type="text" id="ollamaHost" value="http://localhost:11434" placeholder="http://localhost:11434">
-      <button id="detectBtn" onclick="detectOllamaModels()">⟳ Detect</button>
-    </div>
-
     <div class="model-select-wrap">
-      <select id="modelSelect" onchange="onModelChange()">
-        <option value="claude-sonnet-4-20250514">claude-sonnet-4-6</option>
-      </select>
+      <select id="modelSelect" onchange="onModelChange()"><option value="claude-sonnet-4-20250514">Sonnet 4</option></select>
     </div>
-
-    <div class="status-badge idle" id="statusBadge">
-      <span>●</span><span id="statusText">ready</span>
-    </div>
-
-    <button class="clear-btn" onclick="clearChat()">✕ Clear</button>
+    <div class="status-badge idle" id="statusBadge"><span>●</span><span id="statusText">ready</span></div>
+    <button class="clear-btn" onclick="clearChat()">✕</button>
   </div>
 </header>
 
-<!-- MESSAGES -->
+<div id="apiKeySection" class="visible">
+  <label>API KEY:</label>
+  <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" autocorrect="off" spellcheck="false">
+  <button id="saveKeyBtn" onclick="saveApiKey()">Simpan</button>
+  <span class="api-note">Key disimpan di localStorage. Tidak keluar ke mana-mana selain Anthropic.</span>
+</div>
+
+<div id="ollamaHostWrap">
+  <input type="text" id="ollamaHost" value="http://localhost:11434" placeholder="http://localhost:11434">
+  <button id="detectBtn" onclick="detectOllamaModels()">⟳ Detect</button>
+</div>
+
 <div id="messages">
   <div class="welcome" id="welcome">
     <span class="welcome-icon">✦</span>
     <h2>PocketAI</h2>
-    <p>Chat dengan AI — pilih <strong>Cloud</strong> (Claude API) atau <strong>Lokal</strong> (Ollama, 100% offline).</p>
+    <p>Chat dengan AI — pilih <strong>Cloud</strong> (masukkan API key) atau <strong>Lokal</strong> (Ollama offline).</p>
     <div class="mode-cards">
-      <div class="mode-card cloud">
-        <span class="card-icon">☁</span>
-        <div class="card-title">Cloud Mode</div>
-        <div class="card-desc">Ditenagai Claude dari Anthropic. Cerdas, cepat, butuh internet.</div>
-      </div>
-      <div class="mode-card local">
-        <span class="card-icon">🦙</span>
-        <div class="card-title">Lokal Mode (Ollama)</div>
-        <div class="card-desc">100% offline & privat. Model berjalan langsung di komputer kamu. Gratis.</div>
-      </div>
+      <div class="mode-card cloud"><span class="card-icon">☁</span><div class="card-title">Cloud Mode</div><div class="card-desc">Claude Anthropic. Butuh API key & internet.</div></div>
+      <div class="mode-card local"><span class="card-icon">🦙</span><div class="card-title">Lokal (Ollama)</div><div class="card-desc">100% offline & privat. Gratis, butuh komputer.</div></div>
     </div>
     <div class="suggestions">
       <div class="suggestion-chip" onclick="sendSuggestion('Jelaskan cara kerja neural network dengan analogi sederhana')">🧠 Neural Network</div>
       <div class="suggestion-chip" onclick="sendSuggestion('Tulis fungsi Python untuk bubble sort dengan penjelasan')">🐍 Kode Python</div>
       <div class="suggestion-chip" onclick="sendSuggestion('Apa perbedaan utama SQL vs NoSQL database?')">🗄 SQL vs NoSQL</div>
-      <div class="suggestion-chip" onclick="sendSuggestion('Buat 5 ide startup teknologi yang inovatif untuk 2025')">🚀 Ide Startup</div>
+      <div class="suggestion-chip" onclick="sendSuggestion('Buat 5 ide startup teknologi yang inovatif')">🚀 Ide Startup</div>
       <div class="suggestion-chip" onclick="sendSuggestion('Jelaskan quantum computing dengan bahasa sederhana')">⚛ Quantum</div>
     </div>
   </div>
 </div>
 
-<!-- INPUT -->
 <div class="input-area">
   <div class="input-wrapper">
     <textarea id="input" rows="1" placeholder="Ketik pesan…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
     <button id="sendBtn" onclick="sendMessage()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
     </button>
   </div>
-  <div class="input-footer" id="inputFooter">Enter kirim · Shift+Enter baris baru · Mode: ☁ Cloud (Claude API)</div>
+  <div class="input-footer" id="inputFooter">Enter kirim · Shift+Enter baris baru · Mode: ☁ Cloud</div>
 </div>
 
 <script>
-// ══════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════
-let mode = 'cloud';
-let conversationHistory = [];
-let isLoading = false;
-let ollamaModels = [];
-let currentModel = 'claude-sonnet-4-20250514';
-let abortController = null;
+let mode='cloud',conversationHistory=[],isLoading=false,ollamaModels=[],currentModel='claude-sonnet-4-20250514',abortController=null;
+let apiKey=localStorage.getItem('pocketai_apikey')||'';
 
-const CLOUD_MODELS = [
-  { value: 'claude-sonnet-4-20250514', label: 'claude-sonnet-4-6' },
-  { value: 'claude-haiku-4-5-20251001', label: 'claude-haiku-4-5' },
-];
-
-// ══════════════════════════════════════
-//  MODE
-// ══════════════════════════════════════
-function setMode(m) {
-  mode = m;
-  document.body.classList.toggle('mode-local', m === 'local');
-
-  const btnCloud = document.getElementById('btnCloud');
-  const btnLocal = document.getElementById('btnLocal');
-  const hostWrap = document.getElementById('ollamaHostWrap');
-  const footer   = document.getElementById('inputFooter');
-
-  btnCloud.className = 'mode-btn' + (m === 'cloud' ? ' active-cloud' : '');
-  btnLocal.className = 'mode-btn' + (m === 'local' ? ' active-local' : '');
-  hostWrap.classList.toggle('visible', m === 'local');
-
-  if (m === 'cloud') {
-    populateCloudModels();
-    footer.textContent = 'Enter kirim · Shift+Enter baris baru · Mode: ☁ Cloud (Claude API)';
-    setStatus('ready', 'idle');
-  } else {
-    footer.textContent = 'Enter kirim · Shift+Enter baris baru · Mode: 🦙 Lokal (Ollama)';
-    detectOllamaModels();
-  }
-}
-
-// ══════════════════════════════════════
-//  MODELS
-// ══════════════════════════════════════
-function populateCloudModels() {
-  const sel = document.getElementById('modelSelect');
-  sel.innerHTML = '';
-  CLOUD_MODELS.forEach(m => {
-    const o = document.createElement('option');
-    o.value = m.value; o.textContent = m.label;
-    sel.appendChild(o);
-  });
-  currentModel = CLOUD_MODELS[0].value;
-  sel.value = currentModel;
-}
-
-function populateOllamaModels(models) {
-  const sel = document.getElementById('modelSelect');
-  sel.innerHTML = '';
-  if (!models.length) {
-    const o = document.createElement('option'); o.value=''; o.textContent='— no models —'; sel.appendChild(o);
-    currentModel = ''; return;
-  }
-  models.forEach(m => {
-    const o = document.createElement('option'); o.value=m; o.textContent=m; sel.appendChild(o);
-  });
-  currentModel = models[0]; sel.value = currentModel;
-}
-
-function onModelChange() { currentModel = document.getElementById('modelSelect').value; }
-
-// ══════════════════════════════════════
-//  OLLAMA DETECT
-// ══════════════════════════════════════
-async function detectOllamaModels() {
-  const host = document.getElementById('ollamaHost').value.trim().replace(/\/$/,'');
-  setStatus('connecting…', 'idle');
-  try {
-    const res = await fetch(`${host}/api/tags`, { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) throw new Error('bad response');
-    const data = await res.json();
-    ollamaModels = (data.models || []).map(m => m.name);
-    populateOllamaModels(ollamaModels);
-    if (ollamaModels.length) {
-      setStatus('🦙 online · ' + ollamaModels.length + ' model', 'online');
-      showBanner('✅ Ollama terhubung! ' + ollamaModels.length + ' model siap digunakan.', 'info');
-    } else {
-      setStatus('🦙 online · 0 model', 'online');
-      showBanner('⚠ Ollama berjalan tapi belum ada model. Jalankan: ollama pull llama3.2', 'info');
-    }
-  } catch(e) {
-    setStatus('offline', 'offline');
-    populateOllamaModels([]);
-    showBanner('❌ Tidak bisa terhubung ke Ollama di ' + host, 'error');
-    setTimeout(openModal, 500);
-  }
-}
-
-// ══════════════════════════════════════
-//  STATUS
-// ══════════════════════════════════════
-function setStatus(text, type) {
-  document.getElementById('statusBadge').className = 'status-badge ' + type;
-  document.getElementById('statusText').textContent = text;
-}
-
-// ══════════════════════════════════════
-//  MODAL
-// ══════════════════════════════════════
-function openModal()  { document.getElementById('ollamaModal').classList.add('open'); }
-function closeModal() { document.getElementById('ollamaModal').classList.remove('open'); }
-
-// ══════════════════════════════════════
-//  CHAT UI HELPERS
-// ══════════════════════════════════════
-function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
-function handleKey(e)    { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); sendMessage(); } }
-function sendSuggestion(t){ document.getElementById('input').value=t; sendMessage(); }
-
-function removeWelcome() { const w=document.getElementById('welcome'); if(w) w.remove(); }
-function scrollBottom()  { const m=document.getElementById('messages'); m.scrollTop=m.scrollHeight; }
-
-function appendUserMessage(text) {
-  removeWelcome();
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = 'msg user';
-  div.innerHTML = `<div class="avatar">👤</div><div class="bubble">${escapeHtml(text).replace(/\n/g,'<br>')}</div>`;
-  msgs.appendChild(div); scrollBottom();
-}
-
-function appendTypingIndicator() {
-  removeWelcome();
-  const isLocal = mode === 'local';
-  const div = document.createElement('div');
-  div.className = `msg ai typing ${isLocal ? 'local-msg local-typing' : 'cloud-msg'}`;
-  div.innerHTML = `<div class="avatar">${isLocal?'🦙':'✦'}</div><div class="bubble"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>`;
-  document.getElementById('messages').appendChild(div); scrollBottom();
-  return div;
-}
-
-function appendAIBubble(modelLabel) {
-  removeWelcome();
-  const isLocal = mode === 'local';
-  const div = document.createElement('div');
-  div.className = `msg ai ${isLocal ? 'local-msg' : 'cloud-msg'}`;
-
-  const bubble = document.createElement('div');
-  bubble.className = 'bubble';
-
-  const sl = document.createElement('div');
-  sl.className = 'source-label';
-  sl.innerHTML = `<span class="sl-dot"></span>${modelLabel}`;
-  bubble.appendChild(sl);
-
-  const content = document.createElement('div');
-  content.className = `streaming-cursor${isLocal?' local-stream':''}`;
-  bubble.appendChild(content);
-
-  div.innerHTML = `<div class="avatar">${isLocal?'🦙':'✦'}</div>`;
-  div.appendChild(bubble);
-  document.getElementById('messages').appendChild(div); scrollBottom();
-  return content;
-}
-
-function showBanner(text, type) {
-  removeWelcome();
-  const div = document.createElement('div');
-  div.className = type === 'error' ? 'error-banner' : 'info-banner';
-  div.textContent = text;
-  document.getElementById('messages').appendChild(div); scrollBottom();
-  setTimeout(() => { if (div.parentNode) div.remove(); }, 8000);
-}
-
-// ══════════════════════════════════════
-//  CLEAR
-// ══════════════════════════════════════
-function clearChat() {
-  if (abortController) { abortController.abort(); abortController = null; }
-  conversationHistory = []; isLoading = false;
-  document.getElementById('sendBtn').disabled = false;
-  setStatus(mode==='local'&&ollamaModels.length ? '🦙 online · '+ollamaModels.length+' model' : 'ready', mode==='local'&&ollamaModels.length ? 'online' : 'idle');
-  document.getElementById('messages').innerHTML = `<div class="welcome" id="welcome">
-    <span class="welcome-icon">✦</span><h2>PocketAI</h2>
-    <p>Chat dengan AI — pilih <strong>Cloud</strong> (Claude API) atau <strong>Lokal</strong> (Ollama, 100% offline).</p>
-    <div class="mode-cards">
-      <div class="mode-card cloud"><span class="card-icon">☁</span><div class="card-title">Cloud Mode</div><div class="card-desc">Claude dari Anthropic. Cerdas, cepat, butuh internet.</div></div>
-      <div class="mode-card local"><span class="card-icon">🦙</span><div class="card-title">Lokal Mode (Ollama)</div><div class="card-desc">100% offline & privat. Model berjalan di komputer kamu.</div></div>
-    </div>
-    <div class="suggestions">
-      <div class="suggestion-chip" onclick="sendSuggestion('Jelaskan cara kerja neural network dengan analogi sederhana')">🧠 Neural Network</div>
-      <div class="suggestion-chip" onclick="sendSuggestion('Tulis fungsi Python untuk bubble sort dengan penjelasan')">🐍 Kode Python</div>
-      <div class="suggestion-chip" onclick="sendSuggestion('Apa perbedaan utama SQL vs NoSQL database?')">🗄 SQL vs NoSQL</div>
-      <div class="suggestion-chip" onclick="sendSuggestion('Buat 5 ide startup teknologi yang inovatif untuk 2025')">🚀 Ide Startup</div>
-    </div></div>`;
-}
-
-// ══════════════════════════════════════
-//  SEND ROUTER
-// ══════════════════════════════════════
-async function sendMessage() {
-  if (isLoading) return;
-  const input = document.getElementById('input');
-  const text  = input.value.trim();
-  if (!text) return;
-
-  if (mode === 'local' && !currentModel) {
-    showBanner('❌ Tidak ada model Ollama. Klik ⟳ Detect untuk menghubungkan.', 'error'); return;
-  }
-
-  input.value = ''; input.style.height = 'auto';
-  isLoading = true;
-  document.getElementById('sendBtn').disabled = true;
-  abortController = new AbortController();
-
-  appendUserMessage(text);
-  conversationHistory.push({ role: 'user', content: text });
-
-  try {
-    if (mode === 'cloud') await sendCloud();
-    else                  await sendOllama();
-  } finally {
-    isLoading = false;
-    document.getElementById('sendBtn').disabled = false;
-    abortController = null;
-    input.focus();
-  }
-}
-
-// ══════════════════════════════════════
-//  CLOUD SEND (Claude streaming)
-// ══════════════════════════════════════
-async function sendCloud() {
-  setStatus('thinking…', 'idle');
-  const typingEl = appendTypingIndicator();
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: abortController.signal,
-      body: JSON.stringify({
-        model: currentModel,
-        max_tokens: 1024,
-        stream: true,
-        system: 'Kamu adalah PocketAI, asisten AI yang cerdas, ramah, dan ringkas. Jawab dalam bahasa yang sama dengan user (Indonesia atau Inggris). Untuk kode, gunakan code block.',
-        messages: conversationHistory
-      })
-    });
-
-    typingEl.remove();
-
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error?.message || 'HTTP ' + response.status);
-    }
-
-    const sel   = document.getElementById('modelSelect');
-    const label = sel.options[sel.selectedIndex]?.text || currentModel;
-    const contentEl = appendAIBubble(label);
-    setStatus('generating…', 'idle');
-
-    const reader = response.body.getReader();
-    const dec    = new TextDecoder();
-    let fullText = '', buf = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      const lines = buf.split('\n'); buf = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const raw = line.slice(6).trim();
-        if (raw === '[DONE]') break;
-        try {
-          const p = JSON.parse(raw);
-          const delta = p.delta?.text || '';
-          if (delta) { fullText += delta; contentEl.innerHTML = formatText(fullText); scrollBottom(); }
-        } catch {}
-      }
-    }
-
-    contentEl.classList.remove('streaming-cursor','local-stream');
-    conversationHistory.push({ role: 'assistant', content: fullText });
-    setStatus('ready', 'idle');
-
-  } catch(e) {
-    if (typingEl.parentNode) typingEl.remove();
-    if (e.name !== 'AbortError') {
-      showBanner('⚠ Cloud Error: ' + e.message, 'error');
-      conversationHistory.pop();
-    }
-    setStatus('ready', 'idle');
-  }
-}
-
-// ══════════════════════════════════════
-//  OLLAMA SEND (local streaming)
-// ══════════════════════════════════════
-async function sendOllama() {
-  const host = document.getElementById('ollamaHost').value.trim().replace(/\/$/,'');
-  setStatus('🦙 generating…', 'online');
-  const typingEl = appendTypingIndicator();
-
-  try {
-    const response = await fetch(`${host}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: abortController.signal,
-      body: JSON.stringify({
-        model: currentModel,
-        stream: true,
-        options: { temperature: 0.7 },
-        messages: conversationHistory.map(m => ({
-          role: m.role === 'assistant' ? 'assistant' : m.role,
-          content: m.content
-        }))
-      })
-    });
-
-    typingEl.remove();
-    if (!response.ok) throw new Error('Ollama HTTP ' + response.status);
-
-    const contentEl = appendAIBubble('🦙 ' + currentModel);
-    let fullText = '', buf = '';
-
-    const reader = response.body.getReader();
-    const dec    = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      const lines = buf.split('\n'); buf = lines.pop();
-      for (const line of lines) {
-        if (!line.trim()) continue;
-        try {
-          const p = JSON.parse(line);
-          const delta = p.message?.content || '';
-          if (delta) { fullText += delta; contentEl.innerHTML = formatText(fullText); scrollBottom(); }
-          if (p.done) break;
-        } catch {}
-      }
-    }
-
-    contentEl.classList.remove('streaming-cursor','local-stream');
-    conversationHistory.push({ role: 'assistant', content: fullText });
-    setStatus('🦙 online · ' + ollamaModels.length + ' model', 'online');
-
-  } catch(e) {
-    if (typingEl.parentNode) typingEl.remove();
-    if (e.name !== 'AbortError') {
-      const msg = e.message.includes('fetch') || e.message.includes('Failed')
-        ? '❌ Tidak bisa terhubung ke Ollama. Pastikan OLLAMA_ORIGINS="*" ollama serve sudah berjalan.'
-        : '⚠ Ollama Error: ' + e.message;
-      showBanner(msg, 'error');
-      conversationHistory.pop();
-      setStatus('offline', 'offline');
-    }
-  }
-}
-
-// ══════════════════════════════════════
-//  FORMAT / ESCAPE
-// ══════════════════════════════════════
-function formatText(text) {
-  text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_,lang,code) =>
-    `<pre><code>${escapeHtml(code.trim())}</code></pre>`);
-  text = text.replace(/`([^`]+)`/g, (_,c) => `<code>${escapeHtml(c)}</code>`);
-  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  text = text.replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>');
-  text = text.replace(/\n/g, '<br>');
-  return text;
-}
-
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// init
-populateCloudModels();
-</script>
-</body>
-</html>
+const CLOUD_MODELS=[
+  {value:'claude-sonnet-4-20250514',label:'Sonnet 4'},
+  {value:'claude-haiku-4-5-20251001',label:'Haiku 4.5'
