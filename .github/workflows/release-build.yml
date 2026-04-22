@@ -51,7 +51,7 @@ jobs:
 
       - name: Copy Web Files
         run: |
-          cp -r * app/www/
+          cp -r * html-AI/index.html
 
       - name: Build APK
         run: |
